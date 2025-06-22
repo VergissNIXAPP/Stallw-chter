@@ -46,7 +46,7 @@ function pushNotification(message) {
     fetch("https://fcm.googleapis.com/fcm/send", {
       method: "POST",
       headers: {
-        "Authorization": "key=776991059305",
+        "Authorization": "key=BCwiYM8-LCQLd8L_bs8haEYMgDhitbf-hdeAmUcKZSGaIp-xCI1wDevGtmaU43FgdXe0eLaBITUOjPyMzXdQSNM",
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
