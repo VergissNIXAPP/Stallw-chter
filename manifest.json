@@ -1,6 +1,6 @@
 {
   "name": "Stall Wetterwächter",
-  "short_name": "Stall Wetterwächter",
+  "short_name": "Wetterwächter",
   "start_url": "https://stallw-chter.vercel.app/",
   "display": "standalone",
   "background_color": "#002d3e",
