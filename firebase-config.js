@@ -3,7 +3,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyAA3cGdQ6wx36qhM8mkeFihxYCrgH7pRmM",
   authDomain: "stallwaechter-a4dcd.firebaseapp.com",
   projectId: "stallwaechter-a4dcd",
-  storageBucket: "stallwaechter-a4dcd.firebasestorage.app",
+  storageBucket: "stallwaechter-a4dcd.appspot.com",
   messagingSenderId: "776991059305",
   appId: "1:776991059305:web:e410175f5f722564f321f8"
 };
