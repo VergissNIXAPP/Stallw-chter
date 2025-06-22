@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stall Wetterwächter</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-messaging-compat.js"></script>
+  <script src="firebase-config.js" defer></script>
+  <script src="weather-check.js" defer></script>
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <h1>🐴 Stall Wetterwächter</h1>
+      <p class="subheadline">Live-Warnsystem für dein Pferd</p>
+    </header>
+    <main>
+      <div class="weather-box">
+        <div id="icon">⏳</div>
+        <div id="status">Warte auf Wetterdaten...</div>
+      </div>
+      <div id="alert-box" class="hidden">⚠️ Regen angekündigt im Stall, bitte Pferd eindecken!</div>
+    </main>
+    <footer>
+      <p>⏱️ Nächster Check alle 15 Minuten</p>
+    </footer>
+  </div>
+</body>
+</html>
