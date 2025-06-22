@@ -1,15 +1,20 @@
-
 {
   "name": "Stall Wetterwächter",
   "short_name": "Stall Wetterwächter",
-  "start_url": "./index.html",
+  "start_url": "https://stallw-chter.vercel.app/",
   "display": "standalone",
-  "background_color": "#1e1e2f",
-  "theme_color": "#1e1e2f",
+  "background_color": "#002d3e",
+  "theme_color": "#00bfa5",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ]

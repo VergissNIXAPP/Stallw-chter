@@ -1,12 +1,27 @@
 
-const lat = 54.740486;
-const lon = 9.443811;
 const apiKey = '3b30f0ec369c94c3584c440f1e1654d8';
 const statusEl = document.getElementById('status');
 const iconEl = document.getElementById('icon');
 const alertBox = document.getElementById('alert-box');
 
+// Speicher Standort in localStorage
+function saveLocation() {
+  const lat = document.getElementById('latitude').value;
+  const lon = document.getElementById('longitude').value;
+  localStorage.setItem('stall_lat', lat);
+  localStorage.setItem('stall_lon', lon);
+  checkWeather(); // Sofort checken nach Speicherung
+}
+
+// Hole gespeicherten Standort oder Default
+function getLocation() {
+  const lat = localStorage.getItem('stall_lat') || "54.740486";
+  const lon = localStorage.getItem('stall_lon') || "9.443811";
+  return { lat, lon };
+}
+
 async function checkWeather() {
+  const { lat, lon } = getLocation();
   try {
     const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
     const response = await fetch(url);
@@ -42,22 +57,15 @@ function getWeatherIcon(code) {
 }
 
 function pushNotification(message) {
-  messaging.getToken().then((token) => {
-    fetch("https://fcm.googleapis.com/fcm/send", {
-      method: "POST",
-      headers: {
-        "Authorization": "key=BCwiYM8-LCQLd8L_bs8haEYMgDhitbf-hdeAmUcKZSGaIp-xCI1wDevGtmaU43FgdXe0eLaBITUOjPyMzXdQSNM",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        to: token,
-        notification: {
-          title: "Stall Wetterwächter",
-          body: message
-        }
-      })
+  if (Notification.permission === "granted") {
+    new Notification(message);
+  } else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then(permission => {
+      if (permission === "granted") {
+        new Notification(message);
+      }
     });
-  });
+  }
 }
 
 checkWeather();
