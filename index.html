@@ -1,0 +1,235 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🐴 Stall Wetterwächter</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-messaging-compat.js"></script>
+  <script src="firebase-config.js" defer></script>
+  <script src="weather-check.js" defer></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      font-family: 'Segoe UI', sans-serif;
+      height: 100%;
+      background: linear-gradient(135deg, #002d3e, #005b64, #00bfa5);
+      color: white;
+      overflow: hidden;
+    }
+
+    .background-animation {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('night-background.gif') center/cover no-repeat;
+      opacity: 0.25;
+      z-index: -1;
+      animation: pulse 30s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.25; }
+      50% { opacity: 0.4; }
+    }
+
+    .overlay {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100%;
+      padding: 2rem 1rem;
+      backdrop-filter: blur(10px);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+    }
+
+    .emoji-horse {
+      font-size: 4rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .glass-box {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      padding: 2rem;
+      border-radius: 24px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 0 40px rgba(0,0,0,0.6);
+    }
+
+    #icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    #status {
+      font-size: 1.4rem;
+      font-weight: 500;
+    }
+
+    #alert-box {
+      background: #e53935;
+      color: white;
+      padding: 1.2rem;
+      border-radius: 12px;
+      margin-top: 1.8rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      animation: alertpulse 2s infinite;
+    }
+
+    @keyframes alertpulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .location-button {
+      margin-top: 2rem;
+      background: #00bfa5;
+      padding: 0.8rem 1.6rem;
+      font-size: 1rem;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease;
+    }
+
+    .location-button:hover {
+      transform: scale(1.05);
+      background: #009e88;
+    }
+
+    footer {
+      font-size: 0.9rem;
+      color: #ccc;
+      margin-top: auto;
+      padding-top: 2rem;
+      text-align: center;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #1e1f2a;
+      padding: 2rem;
+      border-radius: 24px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    }
+
+    .modal-content input {
+      width: 80%;
+      padding: 0.8rem;
+      margin: 0.8rem 0;
+      border-radius: 10px;
+      border: none;
+      background: #2e2f3a;
+      color: white;
+      font-size: 1rem;
+    }
+
+    .modal-content button {
+      margin-top: 1rem;
+      padding: 0.6rem 1.4rem;
+      background: #43a047;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 22px;
+      font-size: 1.4rem;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="background-animation"></div>
+
+  <div class="overlay">
+    <header>
+      <div class="emoji-horse">🐴</div>
+      <h1>Stall Wetterwächter</h1>
+      <p>Live-Warnsystem für dein Pferd</p>
+    </header>
+
+    <div class="glass-box">
+      <div id="icon"><i class="fas fa-cloud-moon-rain"></i></div>
+      <div id="status">Wetterdaten werden geladen...</div>
+      <div id="alert-box" class="hidden">⚠️ Regen angekündigt, bitte Pferd eindecken!</div>
+      <button class="location-button" onclick="openModal()">📍 Standort ändern</button>
+    </div>
+
+    <footer>Prüft alle 15 Minuten & sendet Benachrichtigungen</footer>
+  </div>
+
+  <div id="locationModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeModal()">&times;</span>
+      <h2>Standort einstellen</h2>
+      <input type="number" id="latitude" step="any" placeholder="Breitengrad" />
+      <input type="number" id="longitude" step="any" placeholder="Längengrad" />
+      <button onclick="saveLocation()">Speichern</button>
+    </div>
+  </div>
+
+  <script>
+    function openModal() {
+      const modal = document.getElementById("locationModal");
+      modal.style.display = "flex";
+      document.getElementById("latitude").value = localStorage.getItem("stall_lat") || "";
+      document.getElementById("longitude").value = localStorage.getItem("stall_lon") || "";
+    }
+
+    function closeModal() {
+      document.getElementById("locationModal").style.display = "none";
+    }
+  </script>
+</body>
+</html>
