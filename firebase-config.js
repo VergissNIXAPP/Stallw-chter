@@ -1,9 +1,14 @@
+fetch("https://europe-west1-stallwaechter-a4dcd.cloudfunctions.net/saveToken", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ token: currentToken })
+});
 
 const firebaseConfig = {
   apiKey: "AIzaSyAA3cGdQ6wx36qhM8mkeFihxYCrgH7pRmM",
   authDomain: "stallwaechter-a4dcd.firebaseapp.com",
   projectId: "stallwaechter-a4dcd",
-  storageBucket: "stallwaechter-a4dcd.appspot.com",
+  storageBucket: "stallwaechter-a4dcd.firebasestorage.app",
   messagingSenderId: "776991059305",
   appId: "1:776991059305:web:e410175f5f722564f321f8"
 };
